@@ -1,0 +1,21 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+- docker pull ankitrgadiya/pandoc
+
+script:
+- docker run \
+  -v $TRAVIS_BUILD_DIR:/dir \
+  -it ankitrgadiya/pandoc \
+  /bin/sh -c "cd dir && make"
+
+deploy:
+    - provider: pages
+      skip-cleanup: true
+      github-token: $GITHUB_TOKEN
+      local-dir: html
+      on:
+        branch: master
