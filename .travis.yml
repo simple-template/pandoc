@@ -7,7 +7,8 @@ before_install:
 - docker pull ankitrgadiya/pandoc
 
 script:
-- docker run \
+- |
+  docker run \
   -v $TRAVIS_BUILD_DIR:/dir \
   -it ankitrgadiya/pandoc \
   /bin/sh -c "cd dir && make"
