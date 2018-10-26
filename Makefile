@@ -1,54 +1,52 @@
-# Makefile to generate HTML pages
+# Makefile to generate files
 
 # Directories
-SOURCE   = source
-TEMPL    = template
-OUTPUT   = html
-FOLDERS  = $(subst $(SOURCE),$(OUTPUT),$(shell find $(SOURCE) -type d))
+SOURCE      := source
+TEMPL       := template
+HTML        := html
+FOLDERS     := $(subst $(SOURCE),$(HTML),$(shell find $(SOURCE) -type d))
 
 # Files
-MD_FILES    = $(shell find $(SOURCE) -type f -name "*.md")
-HTML_FILES  = $(subst $(SOURCE),$(OUTPUT),$(patsubst %.md,%.html,$(MD_FILES)))
-CSS_FILES   = $(subst $(TEMPL),$(OUTPUT),$(wildcard $(TEMPL)/*.css))
-TEMPL_FILES = $(wildcard $(TEMPL)/*.html)
+MD_FILES    := $(shell find $(SOURCE) -type f -name "*.md")
+HTML_FILES  := $(subst $(SOURCE),$(HTML),$(patsubst %.md,%.html,$(MD_FILES)))
+CSS_FILES   := $(subst $(TEMPL),$(HTML),$(wildcard $(TEMPL)/*.css))
+HTML_TEMPL  := $(wildcard $(TEMPL)/*.html)
 
 # Parser options
-PANDOC = pandoc
-FLAGS  = \
-		--standalone \
-		--from markdown \
-		--to html \
-		--template $(TEMPL)/default.html \
-		--mathjax \
-		--include-after-body=$(TEMPL)/footer.html \
-		--include-before-body=$(TEMPL)/navigation.html \
-		--strip-comments
+PANDOC      := pandoc
+HTML_FLAGS  := \
+			--standalone \
+			--from markdown \
+			--to html \
+			--template $(TEMPL)/default.html \
+			--mathjax \
+			--include-after-body=$(TEMPL)/footer.html \
+			--include-before-body=$(TEMPL)/navigation.html \
+			--strip-comments
 
-# Default target to generate all files
-.PHONY: all
+# Default target
 all: $(FOLDERS) $(HTML_FILES) $(CSS_FILES)
 
-# Generate all HTML files when Template files change
-$(HTML_FILES): $(TEMPL_FILES)
-
-# Create sub directories automatically
+# Create folders
 $(FOLDERS):
 	mkdir -p $@
 
-# Target for all HTML files
-html/%.html: source/%.md
-	$(PANDOC) $(FLAGS) --output $@ $<
+# HTML Files
+$(HTML_FILES): $(HTML_TEMPL)
 
-# Copy CSS files
+html/%.html: source/%.md
+	$(PANDOC) $(HTML_FLAGS) --output $@ $<
+
 html/%.css: template/%.css
 	cp $< $@
 
-# Target to clean output folder
-.PHONY: clean
+# Clean
 clean:
-	rm -rf $(OUTPUT)/*
+	rm -rf $(HTML)/*
 
-# Start web server locally for testing
-.PHONY: server
+# Server
 server:
 	caddy -host 0.0.0.0 -port 8000 -root html/
+
+# PHONY targets
+.PHONY: all clean server
