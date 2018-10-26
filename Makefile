@@ -16,6 +16,7 @@ HTML_FILES  := $(subst $(SOURCE),$(HTML),$(patsubst %.md,%.html,$(MD_FILES)))
 CSS_FILES   := $(subst $(TEMPL),$(HTML),$(wildcard $(TEMPL)/*.css))
 HTML_TEMPL  := $(wildcard $(TEMPL)/*.html)
 SITEMAP     := $(HTML)/sitemap.txt
+TREE        := $(HTML)/list.txt
 
 # Parser options
 PANDOC      := pandoc
@@ -31,7 +32,7 @@ HTML_FLAGS  := \
 			--variable google_verification=$(GOOGLE_VERIFICATION)
 
 # Default target
-all: $(FOLDERS) $(HTML_FILES) $(CSS_FILES) $(SITEMAP)
+all: $(FOLDERS) $(HTML_FILES) $(CSS_FILES) $(SITEMAP) $(TREE)
 
 # Create folders
 $(FOLDERS):
@@ -49,6 +50,11 @@ html/%.css: template/%.css
 # Sitemap
 $(SITEMAP): $(HTML_FILES)
 	find $(HTML)/ -name "*.html" -type f -printf "$(BASEURL)/%P\n" > $@
+
+# Tree
+$(TREE): $(HTML_FILES)
+	cd $(HTML) && \
+	tree -P '*.html|*.css|*.txt' --charset=ascii --dirsfirst -o list.txt
 
 # Clean
 clean:
