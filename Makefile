@@ -1,7 +1,8 @@
 # Makefile to generate files
 
 # SEO Variables
-BASEURL := https://st.argp.in/pandoc
+BASEURL             := https://st.argp.in/pandoc
+# GOOGLE_VERIFICATION :=
 
 # Directories
 SOURCE      := source
@@ -26,7 +27,8 @@ HTML_FLAGS  := \
 			--mathjax \
 			--include-after-body=$(TEMPL)/footer.html \
 			--include-before-body=$(TEMPL)/navigation.html \
-			--strip-comments
+			--strip-comments \
+			--variable google_verification=$(GOOGLE_VERIFICATION)
 
 # Default target
 all: $(FOLDERS) $(HTML_FILES) $(CSS_FILES) $(SITEMAP)
