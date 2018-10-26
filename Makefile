@@ -1,5 +1,8 @@
 # Makefile to generate files
 
+# SEO Variables
+BASEURL := https://st.argp.in/pandoc
+
 # Directories
 SOURCE      := source
 TEMPL       := template
@@ -11,6 +14,7 @@ MD_FILES    := $(shell find $(SOURCE) -type f -name "*.md")
 HTML_FILES  := $(subst $(SOURCE),$(HTML),$(patsubst %.md,%.html,$(MD_FILES)))
 CSS_FILES   := $(subst $(TEMPL),$(HTML),$(wildcard $(TEMPL)/*.css))
 HTML_TEMPL  := $(wildcard $(TEMPL)/*.html)
+SITEMAP     := $(HTML)/sitemap.txt
 
 # Parser options
 PANDOC      := pandoc
@@ -25,7 +29,7 @@ HTML_FLAGS  := \
 			--strip-comments
 
 # Default target
-all: $(FOLDERS) $(HTML_FILES) $(CSS_FILES)
+all: $(FOLDERS) $(HTML_FILES) $(CSS_FILES) $(SITEMAP)
 
 # Create folders
 $(FOLDERS):
@@ -39,6 +43,10 @@ html/%.html: source/%.md
 
 html/%.css: template/%.css
 	cp $< $@
+
+# Sitemap
+$(SITEMAP): $(HTML_FILES)
+	find $(HTML)/ -name "*.html" -type f -printf "$(BASEURL)/%P\n" > $@
 
 # Clean
 clean:
