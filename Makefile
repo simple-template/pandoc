@@ -8,15 +8,16 @@ BASEURL             := https://st.argp.in/pandoc
 SOURCE      := source
 TEMPL       := template
 HTML        := html
+STATIC      := static
 FOLDERS     := $(subst $(SOURCE),$(HTML),$(shell find $(SOURCE) -type d))
 
 # Files
-MD_FILES    := $(shell find $(SOURCE) -type f -name "*.md")
-HTML_FILES  := $(subst $(SOURCE),$(HTML),$(patsubst %.md,%.html,$(MD_FILES)))
-CSS_FILES   := $(subst $(TEMPL),$(HTML),$(wildcard $(TEMPL)/*.css))
-HTML_TEMPL  := $(wildcard $(TEMPL)/*.html)
-SITEMAP     := $(HTML)/sitemap.txt
-TREE        := $(HTML)/list.txt
+MD_FILES     := $(shell find $(SOURCE) -type f -name "*.md")
+HTML_FILES   := $(subst $(SOURCE),$(HTML),$(patsubst %.md,%.html,$(MD_FILES)))
+HTML_TEMPL   := $(wildcard $(TEMPL)/*.html)
+STATIC_FILES := $(subst $(STATIC),$(HTML),$(wildcard $(STATIC)/*))
+SITEMAP      := $(HTML)/sitemap.txt
+TREE         := $(HTML)/list.txt
 
 # Parser options
 PANDOC      := pandoc
@@ -32,7 +33,7 @@ HTML_FLAGS  := \
 			--variable google_verification=$(GOOGLE_VERIFICATION)
 
 # Default target
-all: $(FOLDERS) $(HTML_FILES) $(CSS_FILES) $(SITEMAP) $(TREE)
+all: $(FOLDERS) $(HTML_FILES) $(STATIC_FILES) $(SITEMAP) $(TREE)
 
 # Create folders
 $(FOLDERS):
@@ -44,8 +45,9 @@ $(HTML_FILES): $(HTML_TEMPL)
 html/%.html: source/%.md
 	$(PANDOC) $(HTML_FLAGS) --output $@ $<
 
-html/%.css: template/%.css
-	cp $< $@
+# Static Assets
+$(STATIC_FILES): $(wildcard $(STATIC)/*)
+	cp $(STATIC)/* $(HTML)
 
 # Sitemap
 $(SITEMAP): $(HTML_FILES)
