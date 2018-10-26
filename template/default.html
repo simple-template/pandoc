@@ -5,6 +5,9 @@
 	<meta name="generator" content="pandoc" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 	<title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
+	$if(redirect)$
+	<meta http-equiv="refresh" content="0; url=$redirect$" />
+	$endif$
 	<style>
 		body { max-width: 40em; margin: auto; font-family: -apple-system,
 		BlinkMacSystemFont,"Segoe UI", "Roboto", "Oxygen", "Overpass",
