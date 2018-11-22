@@ -47,7 +47,7 @@ html/%.html: source/%.md
 
 # Static Assets
 $(STATIC_FILES): $(wildcard $(STATIC)/*)
-	cp $(STATIC)/* $(HTML)
+	cp -r $(STATIC)/* $(HTML)
 
 # Sitemap
 $(SITEMAP): $(HTML_FILES)
