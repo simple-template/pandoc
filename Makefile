@@ -1,6 +1,7 @@
 # Makefile to generate files
 
-# SEO Variables
+# Variables
+__VERSION           := 1.0
 BASEURL             := https://st.argp.in/pandoc
 # GOOGLE_VERIFICATION :=
 
@@ -17,7 +18,7 @@ HTML_FILES   := $(subst $(SOURCE),$(HTML),$(patsubst %.md,%.html,$(MD_FILES)))
 HTML_TEMPL   := $(wildcard $(TEMPL)/*.html)
 STATIC_FILES := $(subst $(STATIC),$(HTML),$(wildcard $(STATIC)/*))
 SITEMAP      := $(HTML)/sitemap.txt
-TREE         := $(HTML)/list.txt
+TREE         := $(HTML)/sitemap.html
 
 # Parser options
 PANDOC      := pandoc
@@ -55,8 +56,14 @@ $(SITEMAP): $(HTML_FILES)
 
 # Tree
 $(TREE): $(HTML_FILES)
-	cd $(HTML) && \
-	tree -P '*.html|*.css|*.txt' --charset=ascii --dirsfirst -o list.txt
+	touch $@ && \
+	tree \
+		$(HTML) \
+		-P '*.html|*.css|*.txt' \
+		--dirsfirst \
+		-H $(BASEURL) \
+		-T "Sitemap" \
+		-o $@
 
 # Clean
 clean:
