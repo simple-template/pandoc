@@ -1,7 +1,7 @@
 # Makefile to generate files
 
 # Variables
-__VERSION           := 1.0
+__VERSION           := 1.1
 BASEURL             := https://st.argp.in/pandoc
 # GOOGLE_VERIFICATION :=
 
@@ -34,7 +34,7 @@ HTML_FLAGS  := \
 			--variable google_verification=$(GOOGLE_VERIFICATION)
 
 # Default target
-all: $(FOLDERS) $(HTML_FILES) $(STATIC_FILES) $(SITEMAP) $(TREE)
+all: $(FOLDERS) $(HTML_FILES) $(STATIC_FILES) $(TREE) $(SITEMAP)
 
 # Create folders
 $(FOLDERS):
@@ -52,7 +52,11 @@ $(STATIC_FILES): $(wildcard $(STATIC)/*)
 
 # Sitemap
 $(SITEMAP): $(HTML_FILES)
-	find $(HTML)/ -name "*.html" -type f -printf "$(BASEURL)/%P\n" > $@
+	find $(HTML)/ \
+		-name "*.html" \
+		! -name "404.html" \
+		-type f \
+		-printf "$(BASEURL)/%P\n" > $@
 
 # Tree
 $(TREE): $(HTML_FILES)
