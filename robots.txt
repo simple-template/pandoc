@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://st.argp.in/pandoc/sitemap.txt
